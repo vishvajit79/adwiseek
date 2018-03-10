@@ -23,9 +23,11 @@ app.post('/posts', (req, res) => {
   var db = req.db;
   var title = req.body.title;
   var description = req.body.description;
+  var age = req.body.age;
   var new_post = new Post({
     title: title,
-    description: description
+    description: description,
+    age: age
   })
 
   new_post.save(function (error) {
@@ -42,7 +44,7 @@ app.post('/posts', (req, res) => {
 
 // Fetch all posts
 app.get('/posts', (req, res) => {
-  Post.find({}, 'title description', function (error, posts) {
+  Post.find({}, 'title description age', function (error, posts) {
     if (error) { console.error(error); }
     res.send({
       posts: posts
@@ -53,7 +55,7 @@ app.get('/posts', (req, res) => {
 // Fetch single post
 app.get('/post/:id', (req, res) => {
   var db = req.db;
-  Post.findById(req.params.id, 'title description', function (error, post) {
+  Post.findById(req.params.id, 'title description age', function (error, post) {
     if (error) { console.error(error); }
     res.send(post)
   })
@@ -62,7 +64,7 @@ app.get('/post/:id', (req, res) => {
 // Update a post
 app.put('/posts/:id', (req, res) => {
   var db = req.db;
-  Post.findById(req.params.id, 'title description', function (error, post) {
+  Post.findById(req.params.id, 'title description age', function (error, post) {
     if (error) { console.error(error); }
 
     post.title = req.body.title
@@ -89,6 +91,21 @@ app.delete('/posts/:id', (req, res) => {
     res.send({
       success: true
     })
+  })
+})
+
+app.get('/', (req, res) => {
+  Post.find({}, '', function (error, response) {
+    if (error) {console.error(error);}
+    res.send(response)
+  })
+})
+
+app.get('/:id', (req, res) => {
+  var db = req.db
+  Post.findById(req.params.id, '', function(error, response){
+    if (error) {console.error(error);}
+    res.send(response)
   })
 })
 
